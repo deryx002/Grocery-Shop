@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel - Grocery Shop</title>
+    <link rel="stylesheet" href="admin-style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <header class="admin-header">
+        <h1><i class="fas fa-store"></i> Grocery Shop Admin</h1>
+        <div class="user-info">
+            <span id="currentUser">Admin</span>
+            <button class="logout-btn" onclick="logout()">
+                <i class="fas fa-sign-out-alt"></i> Logout
+            </button>
+        </div>
+    </header>
+
+    <div class="admin-container">
+        <nav class="sidebar">
+            <ul class="sidebar-menu">
+                <li><a href="#" class="active" onclick="showDashboard()">
+                    <i class="fas fa-tachometer-alt"></i> Dashboard
+                </a></li>
+                <li><a href="#" onclick="showTab('products')">
+                    <i class="fas fa-boxes"></i> Products
+                </a></li>
+                <li><a href="#" onclick="showTab('categories')">
+                    <i class="fas fa-tags"></i> Categories
+                </a></li>
+                <li><a href="#" onclick="showTab('sales')">
+                    <i class="fas fa-chart-line"></i> Sales Report
+                </a></li>
+                <li><a href="#" onclick="showTab('import')">
+                    <i class="fas fa-file-import"></i> Import/Export
+                </a></li>
+            </ul>
+        </nav>
+
+        <main class="main-content" id="mainContent">
+            <!-- Dashboard Content -->
+            <div id="dashboardContent">
+                <div class="dashboard-stats">
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <h4>Today's Sales</h4>
+                            <p class="stat-value" id="todaySales">₹0</p>
+                        </div>
+                        <div class="stat-card">
+                            <h4>Total Products</h4>
+                            <p class="stat-value" id="totalProducts">0</p>
+                        </div>
+                        <div class="stat-card">
+                            <h4>Top Category</h4>
+                            <p class="stat-value" id="topCategory">-</p>
+                        </div>
+                        <div class="stat-card">
+                            <h4>Monthly Revenue</h4>
+                            <p class="stat-value" id="monthlyRevenue">₹0</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="quick-actions">
+                    <h3>Quick Actions</h3>
+                    <div class="action-buttons">
+                        <button class="action-btn" onclick="openAddProductModal()">
+                            <i class="fas fa-plus-circle"></i> Add New Product
+                        </button>
+                        <button class="action-btn" onclick="openAddCategoryModal()">
+                            <i class="fas fa-tag"></i> Add New Category
+                        </button>
+                        <button class="action-btn" onclick="sendDailyReport()">
+                            <i class="fas fa-whatsapp"></i> Send WhatsApp Report
+                        </button>
+                    </div>
+                </div>
+
+                <div class="recent-sales">
+                    <h3>Recent Sales</h3>
+                    <div id="recentSalesTable"></div>
+                </div>
+            </div>
+
+            <!-- Products Tab -->
+            <div id="productsTab" class="tab-content" style="display: none;">
+                <div class="action-bar">
+                    <button onclick="openAddProductModal()">
+                        <i class="fas fa-plus"></i> Add Product
+                    </button>
+                    <button onclick="exportProductsToExcel()">
+                        <i class="fas fa-download"></i> Export Products
+                    </button>
+                    <div class="search-box">
+                        <input type="text" id="searchAdminProduct" placeholder="Search products...">
+                    </div>
+                </div>
+                
+                <div class="products-table-container">
+                    <table class="products-table" id="adminProductsTable">
+                        <thead>
+                            <tr>
+                                <th>S.No</th>
+                                <th>Product Name</th>
+                                <th>Category</th>
+                                <th>Price (₹)</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="productsTableBody">
+                            <!-- Products will be loaded here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Categories Tab -->
+            <div id="categoriesTab" class="tab-content" style="display: none;">
+                <div class="action-bar">
+                    <button onclick="openAddCategoryModal()">
+                        <i class="fas fa-plus"></i> Add Category
+                    </button>
+                </div>
+                
+                <div class="categories-list" id="categoriesList">
+                    <!-- Categories will be loaded here -->
+                </div>
+                
+                <div class="category-sales">
+                    <h3>Category-wise Sales</h3>
+                    <div id="categorySalesChart"></div>
+                </div>
+            </div>
+
+            <!-- Sales Report Tab -->
+            <div id="salesTab" class="tab-content" style="display: none;">
+                <div class="date-filters">
+                    <div class="filter-group">
+                        <label>From:</label>
+                        <input type="date" id="startDate">
+                    </div>
+                    <div class="filter-group">
+                        <label>To:</label>
+                        <input type="date" id="endDate">
+                    </div>
+                    <button onclick="filterSales()">
+                        <i class="fas fa-filter"></i> Filter
+                    </button>
+                    <button onclick="exportSalesToExcel()">
+                        <i class="fas fa-file-excel"></i> Export Excel
+                    </button>
+                    <button onclick="sendDailyReport()" class="whatsapp-btn">
+                        <i class="fab fa-whatsapp"></i> Send to WhatsApp
+                    </button>
+                </div>
+                
+                <div class="sales-report">
+                    <table class="sales-table" id="salesReportTable">
+                        <thead>
+                            <tr>
+                                <th>S.No</th>
+                                <th>Date & Time</th>
+                                <th>Bill No</th>
+                                <th>Items</th>
+                                <th>Total (₹)</th>
+                                <th>Payment</th>
+                                <th>Receipt</th>
+                            </tr>
+                        </thead>
+                        <tbody id="salesTableBody">
+                            <!-- Sales data will be loaded here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Import/Export Tab -->
+            <div id="importTab" class="tab-content" style="display: none;">
+                <div class="import-section">
+                    <i class="fas fa-file-import"></i>
+                    <h3>Import Products from Excel/CSV</h3>
+                    <p>Upload an Excel file to bulk import or update products</p>
+                    
+                    <input type="file" id="fileInput" accept=".xlsx,.xls,.csv" onchange="importFromExcel(event)">
+                    <button class="import-btn" onclick="document.getElementById('fileInput').click()">
+                        <i class="fas fa-upload"></i> Choose File
+                    </button>
+                    
+                    <a href="#" class="template-link" onclick="downloadTemplate()">
+                        <i class="fas fa-download"></i> Download Template
+                    </a>
+                </div>
+                
+                <div class="export-section">
+                    <h3>Export Data</h3>
+                    <div class="export-buttons">
+                        <button onclick="exportProductsToExcel()">
+                            <i class="fas fa-boxes"></i> Export Products
+                        </button>
+                        <button onclick="exportSalesToExcel()">
+                            <i class="fas fa-chart-line"></i> Export Sales
+                        </button>
+                        <button onclick="exportDailyReport()">
+                            <i class="fas fa-calendar-day"></i> Export Today's Report
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Add/Edit Product Modal -->
+    <!-- Update the Add/Edit Product Modal in admin.html -->
+<div id="productModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3 id="modalTitle">Add New Product</h3>
+            <button class="close-modal" onclick="closeModal()">&times;</button>
+        </div>
+        <form id="productForm" onsubmit="saveProduct(event)">
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="productName">Product Name *</label>
+                    <input type="text" id="productName" required>
+                </div>
+                <div class="form-group">
+                    <label for="productCategory">Category *</label>
+                    <select id="productCategory" required onchange="toggleWeightUnitField()">
+                        <!-- Categories will be loaded dynamically -->
+                    </select>
+                </div>
+            </div>
+            
+            <!-- Add weight unit field here -->
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="productPrice">Price (₹) *</label>
+                    <input type="number" id="productPrice" step="0.01" required>
+                </div>
+                <div class="form-group" id="weightUnitContainer" style="display: none;">
+                    <label for="weightUnit">Weight Unit *</label>
+                    <select id="weightUnit">
+                        <option value="piece">Piece</option>
+                        <option value="kg">Kilogram (kg)</option>
+                        <option value="gram">Gram (g)</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="productBarcode">Barcode (Optional)</label>
+                <input type="text" id="productBarcode">
+            </div>
+            
+            <div class="form-actions">
+                <button type="button" class="cancel-btn" onclick="closeModal()">Cancel</button>
+                <button type="submit" class="save-btn">Save Product</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+    <!-- Add Category Modal -->
+    <div id="categoryModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="categoryModalTitle">Add New Category</h3>
+                <button class="close-modal" onclick="closeCategoryModal()">&times;</button>
+            </div>
+            <form id="categoryForm" onsubmit="saveCategory(event)">
+                <div class="form-group">
+                    <label for="categoryName">Category Name *</label>
+                    <input type="text" id="categoryName" required>
+                </div>
+                
+                <div class="form-actions">
+                    <button type="button" class="cancel-btn" onclick="closeCategoryModal()">Cancel</button>
+                    <button type="submit" class="save-btn">Save Category</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Include required libraries -->
+    <script src="libs/xlsx.full.min.js"></script>
+    <script src="admin.js"></script>
+</body>
+</html>

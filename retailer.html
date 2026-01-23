@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Retailer Panel</title>
+    <link rel="stylesheet" href="retailer-style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Retailer Panel</h1>
+            <button onclick="logout()" class="logout-btn">Logout</button>
+        </header>
+        
+        <div class="main-content">
+           <!-- Replace the left-panel in retailer.html with this simplified version -->
+<div class="left-panel">
+    <div class="search-section">
+        <h3>Search & Add Products</h3>
+        <div class="search-box">
+            <input type="text" id="searchProduct" placeholder="Type product name..." 
+                   onkeyup="searchProducts()" autocomplete="off" autofocus>
+            <div id="searchResults" class="search-results"></div>
+        </div>
+        
+        <div class="selected-products">
+            <h4>Selected Products</h4>
+            <div id="selectedProductsList">
+                <!-- Selected products will appear here -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Update the cart section -->
+<div class="right-panel">
+    <div class="cart-section">
+        <div class="cart-header">
+            <h3>Current Bill</h3>
+            <button onclick="clearCart()" class="clear-cart-btn">Clear All</button>
+        </div>
+        
+        <div class="cart-items" id="cartItems">
+            <p class="empty-cart">No products added</p>
+        </div>
+        
+        <div class="cart-summary">
+            <div class="summary-row">
+                <span>Total Items:</span>
+                <span id="totalItems">0</span>
+            </div>
+            <div class="summary-row">
+                <span>Net Total:</span>
+                <span class="total-amount">₹<span id="totalAmount">0.00</span></span>
+            </div>
+        </div>
+        
+        <div class="payment-section">
+            <h4>Payment Method</h4>
+            <div class="payment-options">
+                <label class="payment-option">
+                    <input type="radio" name="payment" value="cash" checked onclick="showCashSection()">
+                    <span>Cash</span>
+                </label>
+                <label class="payment-option">
+                    <input type="radio" name="payment" value="upi" onclick="showUPISection()">
+                    <span>UPI</span>
+                </label>
+                <label class="payment-option">
+                    <input type="radio" name="payment" value="credit" onclick="showCreditSection()">
+                    <span>Credit</span>
+                </label>
+            </div>
+            
+            <div id="cashSection" class="payment-detail">
+                <div class="cash-input">
+                    <label>Amount Received:</label>
+                    <input type="number" id="cashReceived" placeholder="Enter amount" 
+                           oninput="calculateChange()" autocomplete="off" step="0.01">
+                </div>
+                <div class="change-display">
+                    <span>Change to Return:</span>
+                    <span class="change-amount">₹<span id="changeAmount">0.00</span></span>
+                </div>
+            </div>
+            
+            <div id="upiSection" class="payment-detail" style="display: none;">
+                <div class="qr-container">
+                    <div id="qrcode"></div>
+                    <p>Scan to pay via UPI</p>
+                </div>
+                <button onclick="markUPIPaid()" class="upi-confirm-btn">
+                    <i class="fas fa-check"></i> Mark as Paid
+                </button>
+            </div>
+            
+            <div class="action-buttons">
+                <button onclick="completeSale()" class="complete-btn">
+                    <i class="fas fa-check-circle"></i> Complete Sale
+                </button>
+                <button onclick="printBill()" class="print-btn">
+                    <i class="fas fa-print"></i> Print Bill
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+    
+    <script src="libs/qrcode.min.js"></script>
+    <script src="retailer.js"></script>
+</body>
+</html>
